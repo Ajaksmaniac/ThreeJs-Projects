@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vezbe 4</title>
+</head>
+<body>
+    <script src="libs/three/three.js"></script>
+    <script src="js/OrbitControls.js"></script>
+
+    <script>
+        var scene = new THREE.Scene();
+        var camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+
+        var renderer = new THREE.WebGLRenderer();
+
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        document.body.appendChild(renderer.domElement);
+        renderer.shadowMap.enabled = true;
+        window.addEventListener('resize', function(){
+            var width = window.innerWidth;
+            var height = window.innerHeight;
+
+            renderer.setSize(width,height);
+            //postavljamo kameru / apsect da prati resize ekrana
+            camera.aspect = width / height;
+            //update matrice projekcije
+            camera.updateProjectionMatrix();
+        });
+
+        const controls = new THREE.OrbitControls( camera, renderer.domElement );
+
+//controls.update() must be called after any manual changes to the camera's transform
+camera.position.set( 0, 20, 100 );
+controls.update();
+
+  
+
+        //Pozicija kamere(z osa)
+        camera.position.z = 4;
+
+        //podesavanje poda, podne geometrije po specificnoj osi.
+        // Sirina, Visina, Dubina
+      
+
+        
+        //Dodajemo osvetljenje - ambietalno osvetljenje (podsetnik: na nivou celog rendera)
+        var ambientLight = new THREE.AmbientLight(0xffffff,0.1);
+        scene.add(ambientLight);
+
+        var diamondgeometry = new THREE.CylinderGeometry( 0.1, 2*3, 2*3, 15,4 );
+       
+        var diamondmaterial = new THREE.MeshStandardMaterial( {color:0x696d70,emissive:0xCCDFD6, metalness:1.5,flatShading:true ,flatShading:true,roughness: 0.1} );
+        var diamondcylinder = new THREE.Mesh( diamondgeometry, diamondmaterial );
+        
+        this.scene.add( diamondcylinder );
+
+        var diamondgeometry2 = new THREE.CylinderGeometry( 1, 6, 2, 15,4);
+        diamondgeometry2.heightSegments = 17;
+        var diamondmaterial2 = new THREE.MeshStandardMaterial( {color:0x696d70,emissive:0xCCDFD6, metalness:1.5,flatShading:true ,flatShading:true,roughness: 0.1} );
+        var diamondcylinder2 = new THREE.Mesh( diamondgeometry2, diamondmaterial2 );
+        
+        this.scene.add( diamondcylinder2 );
+      
+        var diamond  = new THREE.Geometry();
+        
+        diamondcylinder2.height = 3;
+        diamondcylinder.rotation.z = Math.PI;
+        //diamondcylinder2.rotation.z = Math.PI;
+        diamondcylinder2.position.y = 3.5;
+        diamondcylinder.castShadow = true;
+        diamondcylinder2.castShadow = true;
+        const geometry = new THREE.TorusGeometry( 10,-3, 10, 20 );
+        const material = new THREE.MeshStandardMaterial({color: 0xFAA432,emissive:0xFAA432, roughness: 0.2, metalness: 1.5, flatShading:true} );
+        const torus = new THREE.Mesh( geometry, material );
+     
+        torus.position.y = -11;
+        torus.castShadow = true;
+        scene.add( torus );
+
+        var floorGeometry = new THREE.PlaneGeometry(200, 200, 50);
+        var floorMaterial  = new THREE.MeshStandardMaterial({color: 0x098AD9, side: THREE.DoubleSide,roughness: 0.2, metalness: 0.3} );
+        var floor = new THREE.Mesh(floorGeometry,floorMaterial);
+        floor.receiveShadow = true;
+        floor.position.y = -40;
+        floor.rotation.x = 0.5 * Math.PI;
+        scene.add(floor);
+
+
+        const sgeometry = new THREE.SphereGeometry( 5, 32, 32 );
+const smaterial = new THREE.MeshStandardMaterial( {color: 0xffff00,emissive:0xFAA432, roughness: 1, metalness: 1.5, flatShading:true} );
+const ssphere = new THREE.Mesh( sgeometry, smaterial );
+scene.add( ssphere );
+
+
+ssphere.position.x = 10;
+ssphere.position.y = 30;
+ssphere.position.z = 40;
+        //Direkciono osvetljenje(Boja i intenzitet)
+        var direkcionoSvetlo = new THREE.DirectionalLight(0xffffff,1);
+        direkcionoSvetlo.position.set(0,70,20);
+        scene.add(direkcionoSvetlo);
+        
+        //Spotlight osvetljenje(Boja i intenzitet)
+        var tackaSvetlo = new THREE.SpotLight(0xF0D801,1)
+        tackaSvetlo.position.set(10,30,40);
+        tackaSvetlo.lookAt(torus);
+        tackaSvetlo.castShadow = true;
+        scene.add(tackaSvetlo);
+
+        //Logika prikaza/Logika igrice
+        var update = function(){
+
+            //prikaz u realnom vremenu
+            controls.update();
+            torus.rotation.y += 0.01;
+            diamondcylinder.rotation.y += 0.01;
+            diamondcylinder2.rotation.y += 0.01;
+
+            
+          
+        }
+
+
+        //crtanje scene
+        var render = function(){
+            renderer.render(scene,camera);
+        }
+
+        //start rendera(Update, render,loop itd)
+        var GameLoop = function(){
+            requestAnimationFrame(GameLoop);
+            update();
+            render();
+        }
+
+        GameLoop();
+
+
+
+
+
+      
+    </script>
+</body>
+</html>
