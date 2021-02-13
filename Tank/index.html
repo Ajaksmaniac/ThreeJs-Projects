@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ukljucivanje blendera</title>
+</head>
+<body>
+
+    <canvas id="nasPrikaz"></canvas>
+
+    <script src="three.js"></script>
+    <script src="GLTFLoader.js"></script>
+    <script>
+        var renderer, scene,camera, nasPrikaz = document.getElementById('nasPrikaz');
+
+        renderer = new THREE.WebGLRenderer({
+            canvas:nasPrikaz,
+            antialias:true
+        });
+
+        renderer.setClearColor(0x000000);
+        renderer.setPixelRatio(window.devicePixelRatio)
+        renderer.setSize(window.innerWidth,window.innerHeight);
+
+         /* kamera */
+        camera = new THREE.PerspectiveCamera (45, window.innerWidth / window.innerHeight, 0.1, 1000);
+          /* scena */
+        scene = new THREE.Scene();
+
+        /* osvetljenje */
+        var svetlo = new THREE.AmbientLight(0xffffff, 0.5);
+        scene.add(svetlo);
+        var tackaSvetlo = new THREE.PointLight(0xffffff, 0.4);
+        scene.add(tackaSvetlo);
+        
+        
+        camera.lookAt(scene.position)
+        camera.position.y = 1;
+        camera.position.z = 10;
+       // camera.rotation.x = Math.PI;
+        var loader = new THREE.GLTFLoader();
+        loader.load('Tank.glb', handle_load);
+
+        var mesh;
+
+        function handle_load(gltf){
+            console.log(gltf);
+            mesh = gltf.scene;
+            console.log(mesh.children[0]);
+            mesh.children[0].material = new THREE.MeshLambertMaterial();
+            scene.add(mesh)
+            mesh.position.z = -5;
+        }
+        render();
+
+        var delta = 0;
+
+        var prethodnoVreme = Date.now();
+
+        function render(){
+            delta += 0.1;
+
+            if(mesh){
+                mesh.rotation.y += 0.02;
+
+            }
+
+            renderer.render(scene,camera);
+            requestAnimationFrame(render);
+
+        }
+
+
+
+    //  var renderer, 
+    //  scene, 
+    //  camera, 
+    //  nasPrikaz = document.getElementById('nasPrikaz');
+
+    //  /* Renderer */
+    //  renderer = new THREE.WebGLRenderer({
+    //      canvas: nasPrikaz,
+    //      antialias: true
+    //  });
+
+    //  renderer.setClearColor(0x000000);
+    //  renderer.setPixelRatio(window.devicePixelRatio);
+    //  renderer.setSize(window.innerWidth, window.innerHeight);
+
+    //  /* kamera */
+    //  camera = new THREE.PerspectiveCamera (45, window.innerWidth / window.innerHeight, 0.1, 1000);
+    //  /* scena */
+    //  scene = new THREE.Scene();
+    //  /* osvetljenje */
+    //  var svetlo = new THREE.AmbientLight(0xffffff, 0.2);
+    //  scene.add(svetlo);
+    //  var tackaSvetlo = new THREE.PointLight(0xf3122df, 0.4);
+    //  scene.add(tackaSvetlo);
+
+    //  var loader = new THREE.GLTFLoader();
+    //  loader.load('threejsBlend.glb', handle_load);
+
+    //  var mesh;
+    //  /* funckija */
+
+    //  function handle_load(gltf){
+    //      console.log(gltf);
+    //      mesh = gltf.scene;
+    //      console.log(mesh.children[0]);
+    //      mesh.children[0].material = new THREE.MeshLambertMaterial();
+    //      scene.add(mesh);
+    //      mesh.position.z = -5;
+    //  }
+
+    //  /* render loop */
+
+    //  render();
+    //  var delta = 0;
+    //  var prethodnoVreme = Date.now();
+
+    //  function render(){
+    //      delta += 0.1;
+
+    //      if (mesh) {
+    //          /* animacija mesh-a */
+    //          mesh.rotation.y += 0.01;
+    //      }
+
+    //      renderer.render(scene, camera);
+    //      requestAnimationFrame(render);
+    //  }
+
+    </script>
+</body>
+</html>
